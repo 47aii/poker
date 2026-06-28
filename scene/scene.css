@@ -1,0 +1,147 @@
+/* ── Premium Poker Scene ── */
+
+.poker-scene {
+  --scene-gold: #b8860b;
+  --scene-gold-bright: #d4a017;
+  --scene-gold-deep: #7a5800;
+  --scene-felt: #640000;
+  --scene-felt-deep: #280000;
+  --scene-leather: #100e0a;
+
+  /* Table geometry — ratio matches SVG viewBox "0 0 1000 470" = 2.128:1 */
+  --table-tilt: 56deg;
+  --table-width: 78vw;
+  --table-height: calc(var(--table-width) * 0.47);
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  isolation: isolate;
+  background: #040302;
+}
+
+.poker-scene__camera {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 2200px;
+  perspective-origin: 50% 42%;
+}
+
+.poker-scene__world {
+  position: relative;
+  width: var(--table-width);
+  height: var(--table-height);
+  transform-style: preserve-3d;
+  transform: rotateX(var(--table-tilt)) translateY(-2%);
+  /* CSS handles the floor cast-shadow so SVG doesn't need to */
+  filter: drop-shadow(0 70px 110px rgba(0, 0, 0, 0.98));
+}
+
+.poker-scene__seats {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+}
+
+.poker-scene__hero {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(18%, 22vh, 28%);
+  transform: translateX(-50%);
+  z-index: 55;
+  pointer-events: auto;
+}
+
+
+/* ── Keyframes ── */
+
+@keyframes scene-dealer-breathe {
+  0%, 100% { transform: scaleY(1) translateY(0); }
+  50%       { transform: scaleY(1.016) translateY(-2px); }
+}
+
+@keyframes scene-dealer-blink {
+  0%, 92%, 100% { opacity: 1; }
+  94%, 96%      { opacity: 0.12; }
+}
+
+@keyframes scene-dealer-hand {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  25%      { transform: rotate(-4deg) translateY(-2px); }
+  75%      { transform: rotate(3deg) translateY(-1px); }
+}
+
+@keyframes scene-pot-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 10px rgba(212, 175, 55, 0.14),
+      0 8px 22px rgba(0, 0, 0, 0.84),
+      inset 0 1px 0 rgba(255, 220, 140, 0.12);
+  }
+  50% {
+    box-shadow:
+      0 0 18px rgba(212, 175, 55, 0.24),
+      0 8px 22px rgba(0, 0, 0, 0.84),
+      inset 0 1px 0 rgba(255, 220, 140, 0.20);
+  }
+}
+
+@keyframes scene-felt-shimmer {
+  0%   { background-position: -300% 50%; }
+  100% { background-position: 500%  50%; }
+}
+
+@keyframes scene-chip-slide {
+  0%   { transform: translate(var(--chip-from-x, 0), var(--chip-from-y, -20px)) scale(0.6); opacity: 0; }
+  100% { transform: translate(0, 0) scale(1); opacity: 1; }
+}
+
+@keyframes scene-gold-shimmer {
+  0%   { transform: translateX(-120%); }
+  100% { transform: translateX(220%); }
+}
+
+@keyframes scene-hero-gold {
+  0%, 100% { box-shadow: 0 0 12px rgba(212, 175, 55, 0.36), 0 0 22px rgba(212, 175, 55, 0.12); }
+  50%       { box-shadow: 0 0 18px rgba(212, 175, 55, 0.55), 0 0 34px rgba(212, 175, 55, 0.20); }
+}
+
+
+/* ── Component classes ── */
+
+.scene-dealer-idle {
+  animation: scene-dealer-breathe 4.4s ease-in-out infinite;
+}
+
+.scene-dealer-blink {
+  animation: scene-dealer-blink 5s ease-in-out infinite;
+}
+
+.scene-dealer-hand-active {
+  animation: scene-dealer-hand 0.55s ease-in-out;
+}
+
+.scene-pot-panel {
+  animation: scene-pot-glow 3.6s ease-in-out infinite;
+}
+
+.scene-hero-glow {
+  animation: scene-hero-gold 3s ease-in-out infinite;
+}
+
+/* Felt sheen — nearly imperceptible surface-quality hint */
+.scene-felt-sheen {
+  background: linear-gradient(
+    110deg,
+    transparent 38%,
+    rgba(255, 205, 120, 0.025) 50%,
+    transparent 62%
+  );
+  background-size: 400% 100%;
+  animation: scene-felt-shimmer 18s linear infinite;
+}
